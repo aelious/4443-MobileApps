@@ -3,7 +3,9 @@
 ### Description:
 
 Server created and is up and running! 
+
 IP: [64.225.25.171](http://64.225.25.171/)
+
 Domain: [aelious.me](http://aelious.me/)
 
 ### Files
