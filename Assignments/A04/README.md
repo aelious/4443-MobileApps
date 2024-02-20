@@ -17,9 +17,13 @@ Server created and is up and running! IP: 64.225.25.171
 The API should be publicly available [here](http://aelious.me:8080/docs). If it's not, follow the following instructions.
 
 Server terminal instructions:
-After connecting to the server via ssh, navigate to the A04 folder.
-Run the command `source myenv/bin/activate` to activate the virtual environment.
-Follow this command with `pip install -r requirements.txt` to ensure dependencies are available.
-** If the API is down, run `python3 api.py` **
-Use `python3 mongoManager.py #` where # is replaced by a value from 1 to 11 to perform requests on the database.
 
+1. After connecting to the server via ssh, navigate to the A04 folder.
+
+2. Run the command `source myenv/bin/activate` to activate the virtual environment.
+
+3. Run `pip install -r requirements.txt` to ensure dependencies are available.
+
+4. Use `python3 mongoManager.py #` where # is replaced by a value from 1 to 11 to perform requests on the database.
+
+** If the API is down, run `python3 api.py` after these instructions **
