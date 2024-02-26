@@ -4,6 +4,8 @@
 
 Server created and is up and running! IP: 64.225.25.171
 
+View the current progress [here](https://aelious.me/Candy-Store)!
+
 ### Files
 
 |   #   | File            | Description                                        |
