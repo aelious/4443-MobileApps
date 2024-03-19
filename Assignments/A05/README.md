@@ -20,7 +20,7 @@ I'll only include the relevant files in the file list.
 
 To run this app:
 
-While logged into the shh, navigate to A05 in the root directory.
+While logged into the ssh, navigate to A05 in the root directory.
 
 Run `npx expo start --tunnel`
 
