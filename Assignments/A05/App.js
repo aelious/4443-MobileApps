@@ -14,6 +14,7 @@ const Stack = createNativeStackNavigator();
 
 function App() {
   return (
+    // Builds a navigation container. This is essentially the entire app.
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Splash" screenOptions={{headerShown: false}}>
         <Stack.Screen name="Splash" component={SplashScreen} />

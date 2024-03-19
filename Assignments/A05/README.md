@@ -12,6 +12,6 @@ I'll only include the relevant files in the file list.
 
 |   #   | File            | Description                                        |
 | :---: | --------------- | -------------------------------------------------- |
-|  1    |   [Screens]()      |     Contains every page in the app.       |
-|  2    |   [App.js]()      |   Driver of the program.     |
-|  3    |   [Assets]()     |     Contains the assets that were used.        |
+|  1    |   [Screens](https://github.com/aelious/4443-MobileApps/tree/main/Assignments/A05/screens)      |     Contains every page in the app.       |
+|  2    |   [App.js](https://github.com/aelious/4443-MobileApps/blob/main/Assignments/A05/App.js)      |   Driver of the program.     |
+|  3    |   [Assets](https://github.com/aelious/4443-MobileApps/tree/main/Assignments/A05/assets)     |     Contains the assets that were used.        |
