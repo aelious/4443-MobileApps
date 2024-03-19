@@ -245,6 +245,44 @@ def list_categories():
     result = mm.get(filter={"_id": 0})
     return result
     
+@app.get("/login")
+def list_logins():
+    """
+    Login test
+    """
+    mm.setCollection("login")
+    result = mm.get(filter={"_id": 0})
+    return result
+
+@app.get("/login/{username}")
+def check_password(user: str):
+    """
+    Login test
+    """
+    mm.setCollection("login")
+
+    result = mm.get(
+        query={"username": user}, filter={"_id": 0, "username": 1, "password": 1}
+    )
+    return result
+
+@app.get("/login/verification")
+def check_password(username: str, password: str):
+    """
+    Login test
+    """
+    mm.setCollection("login")
+    flag = mm.find_one( { "username": username } )
+    if flag != None:
+        
+        result = mm.get(
+            query={"username": username}, filter={"_id": 0, "username": 1, "password": 1}
+        )
+        if password == result["data"]["password"]:
+            result = True
+    else:
+        result = False
+    return result
 
 
 @app.get("/promotions")
@@ -254,6 +292,15 @@ def promotions_and_deals():
     """
     return "NO PROMOTIONS. YOU PAY FULL PRICE. >:-("
     
+@app.post("/register")
+def add_new_user(username: str, password: str):
+    """
+    Add a new login to the site.
+    """
+    mm.setCollection("login")
+    result = mm.post({"username": username, "password": password})
+    
+    return result
 
 
 @app.get("/store-info")
