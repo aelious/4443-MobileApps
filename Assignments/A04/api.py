@@ -312,6 +312,6 @@ def store_information():
 
 if __name__ == "__main__":
     uvicorn.run(
-        "api:app", host="aelious.me", port=8080, log_level="debug", reload=True
+        "api:app", host="aelious.me", port=8084, log_level="debug", reload=True
     )
 
