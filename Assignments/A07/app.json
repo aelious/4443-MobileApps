@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "MobileApp",
+    "slug": "MobileApp",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/reallogo.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/images/loading.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/loading.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/images/loading.png"
+    }
+  }
+}

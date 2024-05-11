@@ -1,30 +1,17 @@
 # Libraries for FastAPI
-from fastapi import FastAPI, Query, Path
-from fastapi.responses import RedirectResponse
+from fastapi import FastAPI, Query, Path, File, UploadFile
+from fastapi.responses import RedirectResponse, FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-import json
-from pymongo import MongoClient
 from typing import List
-from pydantic import BaseModel
 from mongoManager import MongoManager
+from random import randint
 
 # Builtin libraries
 import os
-
+import uuid
 from random import shuffle
 
-"""
-           _____ _____   _____ _   _ ______ ____
-     /\   |  __ \_   _| |_   _| \ | |  ____/ __ \
-    /  \  | |__) || |     | | |  \| | |__ | |  | |
-   / /\ \ |  ___/ | |     | | | . ` |  __|| |  | |
-  / ____ \| |    _| |_   _| |_| |\  | |   | |__| |
- /_/    \_\_|   |_____| |_____|_| \_|_|    \____/
-
-The `description` is the information that gets displayed when the api is accessed from a browser and loads the base route.
-Also the instance of `app` below description has info that gets displayed as well when the base route is accessed.
-"""
 
 description = """🤡
 (temp desc.)🤡
@@ -70,47 +57,9 @@ app = FastAPI(
 #     allow_methods=["*"],
 #     allow_headers=["*"],
 # )
-
-"""
-  _      ____   _____          _         _____ _                _____ _____ ______  _____
- | |    / __ \ / ____|   /\   | |       / ____| |        /\    / ____/ ____|  ____|/ ____|
- | |   | |  | | |       /  \  | |      | |    | |       /  \  | (___| (___ | |__  | (___
- | |   | |  | | |      / /\ \ | |      | |    | |      / /\ \  \___ \\___ \|  __|  \___ \
- | |___| |__| | |____ / ____ \| |____  | |____| |____ / ____ \ ____) |___) | |____ ____) |
- |______\____/ \_____/_/    \_\______|  \_____|______/_/    \_\_____/_____/|______|_____/
-
-This is where you will add code to load all the countries and not just countries. Below is a single
-instance of the class `CountryReader` that loads countries. There are 6 other continents to load or
-maybe you create your own country file, which would be great. But try to implement a class that 
-organizes your ability to access a countries polygon data.
-"""
-
+IMAGEDIR = "userImages/"
 mm = MongoManager(db="candy_store")
 
-"""
-  _      ____   _____          _        __  __ ______ _______ _    _  ____  _____   _____
- | |    / __ \ / ____|   /\   | |      |  \/  |  ____|__   __| |  | |/ __ \|  __ \ / ____|
- | |   | |  | | |       /  \  | |      | \  / | |__     | |  | |__| | |  | | |  | | (___
- | |   | |  | | |      / /\ \ | |      | |\/| |  __|    | |  |  __  | |  | | |  | |\___ \
- | |___| |__| | |____ / ____ \| |____  | |  | | |____   | |  | |  | | |__| | |__| |____) |
- |______\____/ \_____/_/    \_\______| |_|  |_|______|  |_|  |_|  |_|\____/|_____/|_____/
-
-This is where methods you write to help with any routes written below should go. Unless you have 
-a module written that you include with statements above.  
-"""
-
-
-"""
-  _____   ____  _    _ _______ ______  _____
- |  __ \ / __ \| |  | |__   __|  ____|/ ____|
- | |__) | |  | | |  | |  | |  | |__  | (___
- |  _  /| |  | | |  | |  | |  |  __|  \___ \
- | | \ \| |__| | |__| |  | |  | |____ ____) |
- |_|  \_\\____/ \____/   |_|  |______|_____/
-
- This is where your routes will be defined. Routes are just python functions that retrieve, save, 
- delete, and update data. How you make that happen is up to you.
-"""
 
 
 @app.get("/")
@@ -119,7 +68,8 @@ async def docs_redirect():
     return RedirectResponse(url="/docs")
 
 
-@app.get("/candies")
+
+@app.get("/candies", tags=["candies"])
 def list_all_candies():
     """
     Retrieve a list of all candies available in the store.
@@ -128,7 +78,7 @@ def list_all_candies():
     result = mm.get(filter={"_id": 0})
     return result
 
-@app.get("/categories")
+@app.get("/categories", tags=["candies"])
 def list_all_categories():
     """
     Retrieve a list of all candy categories available in the store.
@@ -137,7 +87,7 @@ def list_all_categories():
     results = mm.get(filter={"_id": 0})
     return results
 
-@app.get("/candies/category/{category}")
+@app.get("/candies/category/{category}", tags=["candies"])
 def candies_by_category(category: str):
     """
     Search for candies based on a query string (e.g., name, category, flavor).
@@ -145,11 +95,11 @@ def candies_by_category(category: str):
     mm.setCollection("candies")
     result = mm.get(
         query={"category": category},
-        filter={"_id": 0, "name": 1, "price": 1, "category": 1},
+        filter={"_id": 0, "id":1, "name": 1, "price": 1, "category": 1},
     )
     return result
 
-@app.get("/candies/desc/{desc}")
+@app.get("/candies/desc/{desc}", tags=["candies"])
 def candies_by_description(desc: str):
     """
     Search for candies based on a description keyword string (e.g., name, category, flavor).
@@ -164,7 +114,7 @@ def candies_by_description(desc: str):
     )
     return results
 
-@app.get("/candies/name/{name}")
+@app.get("/candies/name/{name}", tags=["candies"])
 def candies_by_name(name: str):
     """
     Search for candies based on a name keyword string (e.g., name, category, flavor).
@@ -179,18 +129,18 @@ def candies_by_name(name: str):
     )
     return results
 
-@app.get("/candies/id/{id}")
+@app.get("/candies/id/{id}", tags=["candies"])
 def get_candy_by_id(id: str):
     """
     Get detailed information about a specific candy.
     """
     mm.setCollection("candies")
     result = mm.get(
-        query={"id": id}, filter={"_id": 0, "name": 1, "price": 1, "category": 1}
+        query={"id": id}, filter={"_id": 0, "name": 1, "price": 1, "category": 1, "desc": 1, "img_url": 1}
     )
     return result
 
-@app.get("/candies/price/{price1}-{price2}")
+@app.get("/candies/price/{price1}-{price2}", tags=["candies"])
 def get_candy_by_price_range(price1: float, price2: float):
     """
     Get candies within a specified price range.
@@ -205,7 +155,7 @@ def get_candy_by_price_range(price1: float, price2: float):
     return rangeQuery
 
 
-@app.post("/candies")
+@app.post("/candies", tags=["candies"])
 def add_new_candy(document):
     """
     Add a new candy to the store's inventory.
@@ -216,7 +166,7 @@ def add_new_candy(document):
     
 
 
-@app.put("/candies/{candy_id}/{update_type}/{update_data}")
+@app.put("/candies/{candy_id}/{update_type}/{update_data}", tags=["candies"])
 def update_candy_info_not_price(candy_id: int, update_type: str, update_data: str):
     """
     Update information about an existing candy.
@@ -226,7 +176,7 @@ def update_candy_info_not_price(candy_id: int, update_type: str, update_data: st
     return result
 
 
-@app.delete("/candies/{candy_id}")
+@app.delete("/candies/{candy_id}", tags=["candies"])
 def delete_candy(candy_id: int):
     """
     Remove a candy from the store's inventory.
@@ -235,17 +185,17 @@ def delete_candy(candy_id: int):
     result = mm.delete(candy_id)
     return result
 
-
-@app.get("/categories")
-def list_categories():
+@app.get("/location", tags=["location"])
+def list_locations():
     """
-    Get a list of candy categories (e.g., chocolates, gummies, hard candies).
+    Get a list of user locations.
     """
-    mm.setCollection("categories")
+    mm.setCollection("location")
     result = mm.get(filter={"_id": 0})
     return result
+
     
-@app.get("/login")
+@app.get("/login", tags=["user"])
 def list_logins():
     """
     Login test
@@ -254,61 +204,122 @@ def list_logins():
     result = mm.get(filter={"_id": 0})
     return result
 
-@app.get("/login/{username}")
-def check_password(user: str):
+@app.get("/{user}", tags=["user"])
+def check_profile(user: str):
     """
-    Login test
+    Contains user info including first and last name
     """
     mm.setCollection("login")
-
     result = mm.get(
-        query={"username": user}, filter={"_id": 0, "username": 1, "password": 1}
+        query={"username": user},
+        filter={"_id": 0, "username":1, "firstName": 1, "lastName": 1, "password": 1, "email": 1, "contacts": 1},
     )
     return result
 
-@app.get("/login/verification")
-def check_password(username: str, password: str):
+@app.get("/email/{email}", tags=["user"])
+def check_profile(email: str):
     """
-    Login test
+    Contains user info including first and last name
     """
     mm.setCollection("login")
-    flag = mm.find_one( { "username": username } )
-    if flag != None:
-        
-        result = mm.get(
-            query={"username": username}, filter={"_id": 0, "username": 1, "password": 1}
-        )
-        if password == result["data"]["password"]:
-            result = True
-    else:
-        result = False
+    result = mm.get(
+        query={"email": email},
+        filter={"_id": 0, "username":1, "firstName": 1, "lastName": 1, "password": 1},
+    )
     return result
 
 
-@app.get("/promotions")
-def promotions_and_deals():
-    """
-    Information about current promotions, deals, or discounts.
-    """
-    return "NO PROMOTIONS. YOU PAY FULL PRICE. >:-("
+
+
     
-@app.post("/register")
-def add_new_user(username: str, password: str):
+@app.post("/register/{user}/{pw}/{first}/{last}/{email}", tags=["user"])
+def add_new_user(user: str, pw:str, first:str, last:str, email:str):
     """
     Add a new login to the site.
     """
     mm.setCollection("login")
-    result = mm.post({"username": username, "password": password})
+    result = mm.post({"username": user, "password": pw, "firstName": first, "lastName": last, "email": email, "contacts": ["aelious", "bannie", "awills", "jmama"]})
+    
+    return result
+
+@app.put("/{user}/updatefirst/{updateName}", tags=["user"])
+def update_profile_firstName(user: str, updateName: str):
+    """
+    Update information about an existing user's first OR last name.
+    """
+    mm.setCollection("login")
+    result = mm.put2("username", user, "firstName", updateName)
+    return result
+
+@app.put("/{user}/updatelast/{updateName}", tags=["user"])
+def update_profile_lastName(user: str, updateName: str):
+    """
+    Update information about an existing user's first OR last name.
+    """
+    mm.setCollection("login")
+    result = mm.put2("username", user, "lastName", updateName)
+    return result
+
+@app.post("/location/{user}/{lat}/{lon}", tags=["location"])
+def create_loc_for_user(user: str, lat: float, lon: float):
+    """
+    Create a user's location
+    """
+    mm.setCollection("location")
+    result = mm.post({"username": user, "latitude": lat, "longitude": lon})
     
     return result
 
 
-@app.get("/store-info")
-def store_information():
+@app.put("/location/{user}/{lat}/{lon}", tags=["location"])
+def update_loc_for_user(user: str, lat: float, lon:float):
     """
-    Basic information about the candy store, including contact details.
+    Update a user's location
     """
-    return "Come visit Generic Candy Store! We have the best collection of candies you can find!"
+    mm.setCollection("location")
+    response1 = mm.put2("username", user, "latitude", lat)
+    response2 = mm.put2("username", user, "longitude", lon)
+    combined_response = {
+        "lat_update_response1": response1,
+        "lat_update_response2": response2,
+    }
+    return (combined_response)
+
+@app.get("/location/{user}", tags=["location"])
+def check_profile(user: str):
+    """
+    Contains user info including username, latitude, and longitude
+    """
+    mm.setCollection("location")
+    result = mm.get(
+        query={"username": user},
+        filter={"_id": 0, "username":1, "latitude": 1, "longitude": 1},
+    )
+    return result
+
+
+@app.delete("/delete/{user_id}", tags=["user"])
+def delete_user(user_id: str):
+    """
+    Remove a user from the store's login database.
+    """
+    mm.setCollection("login")
+    result = mm.delete(user_id)
+    return result
+
+@app.post("/uploadfile/{user}")
+async def create_upload_file(file: UploadFile, user:str):
+    file.filename=f"{user}.jpg"
+    contents = await file.read()
+    with open(f"{IMAGEDIR}{file.filename}", "wb") as f:
+        f.write(contents)
+    return {"filename": file.filename}
+
+@app.get("/show/{user}")
+async def read_user_image(user:str):
+    path = f"{IMAGEDIR}{user}.jpg"
+
+    return FileResponse(path, media_type="image/jpg")
 
 if __name__ == "__main__":
     uvicorn.run(
